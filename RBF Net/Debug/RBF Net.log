@@ -1,0 +1,38 @@
+﻿Сборка начата 20.07.2015 21:49:06.
+     1>Проект "C:\Users\Павел\Desktop\RBF Net\RBF Net\RBF Net.vcxproj" в узле 2 (целевые объекты Build).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt GeneticLearn.cpp "RBF Net.cpp" RBFTrainer.cpp
+         GeneticLearn.cpp
+     1>c:\users\павел\desktop\rbf net\rbf net\geneticlearn.cpp(8): warning C4305: инициализация: усечение из "double" к "const float"
+         Создание кода...
+         Компиляция...
+         RBF Net.cpp
+     1>c:\users\павел\desktop\rbf net\rbf net\rbf net.cpp(10): warning C4305: инициализация: усечение из "double" к "const float"
+         Создание кода...
+         Компиляция...
+         RBFTrainer.cpp
+         Создание кода...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Павел\Desktop\RBF Net\Debug\RBF Net.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Павел\Desktop\RBF Net\Debug\RBF Net.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Павел\Desktop\RBF Net\Debug\RBF Net.lib" /MACHINE:X86 Debug\GeneticLearn.obj
+         "Debug\RBF Net.obj"
+         Debug\RBFNet.obj
+         Debug\RBFNeuron.obj
+         Debug\RBFTrainer.obj
+         Debug\VirtLearn.obj
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: __thiscall RBFTrainer<float,float,class std::vector<float,class std::allocator<float> > >::RBFTrainer<float,float,class std::vector<float,class std::allocator<float> > >(void)" (??0?$RBFTrainer@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAE@XZ) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: __thiscall RBFTrainer<float,float,class std::vector<float,class std::allocator<float> > >::~RBFTrainer<float,float,class std::vector<float,class std::allocator<float> > >(void)" (??1?$RBFTrainer@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAE@XZ) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: void __thiscall RBFTrainer<float,float,class std::vector<float,class std::allocator<float> > >::initLearnAgent(class GeneticLearn<float,float,class std::vector<float,class std::allocator<float> > > *)" (?initLearnAgent@?$RBFTrainer@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAEXPAV?$GeneticLearn@MMV?$vector@MV?$allocator@M@std@@@std@@@@@Z) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: void __thiscall RBFTrainer<float,float,class std::vector<float,class std::allocator<float> > >::initNet(class RBFNet<float,float,class std::vector<float,class std::allocator<float> > > *)" (?initNet@?$RBFTrainer@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAEXPAV?$RBFNet@MMV?$vector@MV?$allocator@M@std@@@std@@@@@Z) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: class RBFNet<float,float,class std::vector<float,class std::allocator<float> > > * __thiscall RBFTrainer<float,float,class std::vector<float,class std::allocator<float> > >::train(class std::vector<float *,class std::allocator<float *> >,class std::vector<float *,class std::allocator<float *> >,class std::vector<float *,class std::allocator<float *> >,class std::vector<float *,class std::allocator<float *> >)" (?train@?$RBFTrainer@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAEPAV?$RBFNet@MMV?$vector@MV?$allocator@M@std@@@std@@@@V?$vector@PAMV?$allocator@PAM@std@@@std@@000@Z) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: __thiscall GeneticLearn<float,float,class std::vector<float,class std::allocator<float> > >::GeneticLearn<float,float,class std::vector<float,class std::allocator<float> > >(void)" (??0?$GeneticLearn@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAE@XZ) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: __thiscall GeneticLearn<float,float,class std::vector<float,class std::allocator<float> > >::~GeneticLearn<float,float,class std::vector<float,class std::allocator<float> > >(void)" (??1?$GeneticLearn@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAE@XZ) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: void __thiscall GeneticLearn<float,float,class std::vector<float,class std::allocator<float> > >::initKoefGener(class std::vector<float,class std::allocator<float> > (__cdecl*)(void))" (?initKoefGener@?$GeneticLearn@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAEXP6A?AV?$vector@MV?$allocator@M@std@@@std@@XZ@Z) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: __thiscall RBFNet<float,float,class std::vector<float,class std::allocator<float> > >::RBFNet<float,float,class std::vector<float,class std::allocator<float> > >(int,int,int)" (??0?$RBFNet@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAE@HHH@Z) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: void __thiscall RBFNet<float,float,class std::vector<float,class std::allocator<float> > >::initNeuronsWithFunc(float (__cdecl*)(float,class std::vector<float,class std::allocator<float> >))" (?initNeuronsWithFunc@?$RBFNet@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAEXP6AMMV?$vector@MV?$allocator@M@std@@@std@@@Z@Z) в функции _main
+     1>RBF Net.obj : error LNK2019: ссылка на неразрешенный внешний символ "public: __thiscall RBFNet<float,float,class std::vector<float,class std::allocator<float> > >::~RBFNet<float,float,class std::vector<float,class std::allocator<float> > >(void)" (??1?$RBFNet@MMV?$vector@MV?$allocator@M@std@@@std@@@@QAE@XZ) в функции _main
+     1>C:\Users\Павел\Desktop\RBF Net\Debug\RBF Net.exe : fatal error LNK1120: неразрешенных внешних элементов: 11
+     1>Построение проекта "C:\Users\Павел\Desktop\RBF Net\RBF Net\RBF Net.vcxproj" завершено (целевые объекты Build) с ошибкой.
+
+СБОЙ сборки.
+
+Затраченное время: 00:00:16.29
