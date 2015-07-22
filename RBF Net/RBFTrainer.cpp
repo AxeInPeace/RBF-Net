@@ -1,3 +1,5 @@
+/*
+
 #include "RBFTrainer.h"
 
 
@@ -25,3 +27,4 @@ template<class I, class O, class K>
 void RBFTrainer<I, O, K>::initNet(RBFNet<I, O, K>* newNet){
 	_net = newNet;
 }
+*/

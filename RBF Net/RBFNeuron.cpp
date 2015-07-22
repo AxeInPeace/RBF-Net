@@ -1,3 +1,4 @@
+/*
 #include "RBFNeuron.h"
 
 template <class I, class O, class K>
@@ -50,3 +51,4 @@ float RBFNeuron<I, O, K>::getWeight (int toNeur){
 	return _weight[toNeur];
 }
 
+*/

@@ -9,9 +9,9 @@ template <class I, class O, class K>
 class VirtLearn
 {
 public:
-	VirtLearn(void);
-	~VirtLearn(void);
+	VirtLearn(void) {;}
+	~VirtLearn(void) {;}
 
-	virtual void learning(vector<I*>, vector<O*>, vector<I*>, vector<O*>, RBFNet<I, O, K>*) = 0;
+	virtual void learning(vector<I*>*, vector<O*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*) = 0;
 };
 

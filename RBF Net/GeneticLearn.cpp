@@ -1,9 +1,11 @@
+/*
 #include "RBFNeuron.h"
 #include "RBFNet.h"
-#include "GeneticLearn.h"
+
 
 #define uint unsigned int
 
+const int prostotak = 100;
 const int POPUL_SIZE = 100;
 const float GOOD_CRITERIA = 0.95;
 
@@ -212,3 +214,4 @@ void GeneticLearn<I, O, K>::_putEveryKoefInNeur(vector<K*>* koefs, RBFNet<I, O, 
 }
 
 
+*/

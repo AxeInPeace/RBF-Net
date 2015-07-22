@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneticLearn.cpp" />
-    <ClCompile Include="RBF Net.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="RBFNet.cpp" />
     <ClCompile Include="RBFNeuron.cpp" />
     <ClCompile Include="RBFTrainer.cpp" />

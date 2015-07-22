@@ -1,3 +1,4 @@
+/*
 #include "RBFNet.h"
 #include "RBFNeuron.h"
 #include <vector>
@@ -100,3 +101,4 @@ float RBFNet<I, O, K>::test(vector<I*>* inVals, vector<O*>* outVals){
 }
 //+++++++++++++++++++++++++++++++++++++++++++ GETTING RESULTS +++++++++++++++++++++++++++++++++++++++++++++++++
 
+*/
