@@ -22,7 +22,7 @@ public:
 	float test(vector<I*>*, vector<O*>*);
 	O evaluate(I);
 
-
+	void initErrorValue(O);
 
 private:
 	int _hiddenLayerSize;
@@ -30,6 +30,9 @@ private:
 	int _outLayerSize;
 	void _initNeurons();
 	vector<RBFNeuron<I, O, K>*> _hiddenNeur;
+
+	O _errVal;
+	float _gaussFunc(O, O);
 	
 	void (*_getZeroObj)(O);
 	//friend O operator+(O, O);	
@@ -92,6 +95,12 @@ void RBFNet<I, O, K>::_initNeurons(){
 }
 
 template<class I, class O, class K>
+void RBFNet<I, O, K>::initErrorValue(O errVal){
+	_errVal = errVal;
+}
+
+
+template<class I, class O, class K>
 void RBFNet<I, O, K>::setZeroFunc(void (*zeroFunc)(O)){
 	_getZeroObj = zeroFunc;
 }
@@ -122,16 +131,24 @@ O RBFNet<I, O, K>::evaluate(I inputValue){
 template<class I, class O, class K>
 float RBFNet<I, O, K>::test(vector<I*>* inVals, vector<O*>* outVals){
 	unsigned int numOfTest = inVals->size();
-	unsigned int successfullyTested = 0;
+	
+	float sum = 0;
 
 	if (numOfTest != outVals->size())
 		return -1;
 
+	O calcRes, trueRes;
 	for (unsigned int i = 0; i < numOfTest; i++){
-		if ( this->evaluate(*((*inVals)[i])) == *((*outVals)[i]))
-			successfullyTested++;
+		calcRes = this->evaluate(*((*inVals)[i]));
+		trueRes = *((*outVals)[i]);
+		sum += _gaussFunc(calcRes, trueRes);
 	}
 
-	return float(successfullyTested)/numOfTest;
+	return (sum / numOfTest);
+}
+
+template<class I, class O, class K>
+float RBFNet<I, O, K>::_gaussFunc(O evaluateResult, O expectingValue){
+	return pow(2.71828f, -pow((expectingValue - evaluateResult) / (_errVal / 2),2));
 }
 //+++++++++++++++++++++++++++++++++++++++++++ GETTING RESULTS +++++++++++++++++++++++++++++++++++++++++++++++++
