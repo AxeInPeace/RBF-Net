@@ -3,15 +3,6 @@
 
 using namespace std;
 
-class Weight
-{
-public:
-	Weight();
-	~Weight();
-private:
-	float weight;
-};
-
 template <class I, class O, class K>
 class RBFNeuron
 {
@@ -19,32 +10,28 @@ public:
 	RBFNeuron();
 	~RBFNeuron();
 
-	O evaluate (I);
-	O evaluate (I, int);
+	O evaluate(I);
+	O evaluate(I, int);
 	void changeKoef(K*);
 	K getKoef();
 
-	void changeWeight (int, float);
-	float getWeight (int);
-	//void changeWeight(int, int, Weight);
+	void changeWeight(int, float);
+	float getWeight(int);
 
 	void setFunc(O (*newFunc)(I, K));
-//	O (*)(I, K) getFunc();
 
 private:
 	O (*_evaluateFunc)(I inLayer, K koefs);
 	K _koef;
 	vector <float> _weight;
-	//vector <Weight*> _weight;
 	//friend O operator*(O, Weight);
 };
-
-#include "RBFNeuron.h"
 
 template <class I, class O, class K>
 RBFNeuron<I, O, K>::RBFNeuron(void)
 {
-	;
+	_weight.resize(1);
+	_weight[0] = 0;
 }
 
 template <class I, class O, class K>
@@ -64,7 +51,7 @@ O RBFNeuron<I, O, K>::evaluate (I inVal){
 
 template <class I, class O, class K>
 O RBFNeuron<I, O, K>::evaluate (I inVal, int weightNum){
-	return _evaluateFunc(inVal, koef) * weight[weightNum];
+	return _evaluateFunc(inVal, _koef) * _weight[weightNum];
 }
 
 
@@ -84,11 +71,11 @@ void RBFNeuron<I, O, K>::setFunc(O (*newFunc)(I, K)){
 }
 
 template <class I, class O, class K>
-void RBFNeuron<I, O, K>::changeWeight (int toNeur, float newWeight){
-	_weight[toNeur] = newWeight;
+void RBFNeuron<I, O, K>::changeWeight (int position, float newWeight){
+	_weight[position] = newWeight;
 }
 
 template <class I, class O, class K>
-float RBFNeuron<I, O, K>::getWeight (int toNeur){
-	return _weight[toNeur];
+float RBFNeuron<I, O, K>::getWeight (int position){
+	return _weight[position];
 }

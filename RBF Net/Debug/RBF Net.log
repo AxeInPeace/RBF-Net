@@ -1,79 +1,100 @@
-﻿Сборка начата 23.07.2015 22:04:22.
-     1>Проект "C:\Users\Павел\Desktop\RBF Net\RBF-Net\RBF Net\RBF Net.vcxproj" в узле 2 (целевые объекты Build).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt GeneticLearn.cpp RBFNet.cpp RBFTrainer.cpp VirtLearn.cpp main.cpp
-         main.cpp
-     1>c:\users\павел\desktop\rbf net\rbf-net\rbf net\main.cpp(28): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-     1>c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(112): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-                 c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(111): при компиляции функции-члена "std::vector<_Ty> *GeneticLearn<I,O,K>::_geneticStartPopulation(void)" класса шаблон
-                 with
-                 [
-                     _Ty=std::vector<std::vector<float> *> *,
-                     I=float,
-                     O=float,
-                     K=std::vector<float>
-                 ]
-                 c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(74): см. ссылку на создание экземпляров функции шаблон при компиляции "std::vector<_Ty> *GeneticLearn<I,O,K>::_geneticStartPopulation(void)"
-                 with
-                 [
-                     _Ty=std::vector<std::vector<float> *> *,
-                     I=float,
-                     O=float,
-                     K=std::vector<float>
-                 ]
-                 c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(72): при компиляции функции-члена "void GeneticLearn<I,O,K>::_geneticFuncLearning(std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,RBFNet<I,O,K> *)" класса шаблон
-                 with
-                 [
-                     I=float,
-                     O=float,
-                     K=std::vector<float>,
-                     _Ty=float *
-                 ]
-                 c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(68): см. ссылку на создание экземпляров функции шаблон при компиляции "void GeneticLearn<I,O,K>::_geneticFuncLearning(std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,RBFNet<I,O,K> *)"
-                 with
-                 [
-                     I=float,
-                     O=float,
-                     K=std::vector<float>,
-                     _Ty=float *
-                 ]
-                 c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(47): при компиляции функции-члена "GeneticLearn<I,O,K>::GeneticLearn(void)" класса шаблон
-                 with
-                 [
-                     I=float,
-                     O=float,
-                     K=std::vector<float>
-                 ]
-                 c:\users\павел\desktop\rbf net\rbf-net\rbf net\main.cpp(31): см. ссылку на создание экземпляров функции шаблон при компиляции "GeneticLearn<I,O,K>::GeneticLearn(void)"
-                 with
-                 [
-                     I=float,
-                     O=float,
-                     K=std::vector<float>
-                 ]
-                 c:\users\павел\desktop\rbf net\rbf-net\rbf net\main.cpp(31): см. ссылку на создание экземпляров класса шаблон при компиляции "GeneticLearn<I,O,K>"
-                 with
-                 [
-                     I=float,
-                     O=float,
-                     K=std::vector<float>
-                 ]
-         Создание кода...
-         Пропуск... (изменения не обнаружены)
-         VirtLearn.cpp
-         RBFTrainer.cpp
-         RBFNet.cpp
-         GeneticLearn.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Павел\Desktop\RBF Net\RBF-Net\Debug\RBF Net.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Павел\Desktop\RBF Net\RBF-Net\Debug\RBF Net.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Павел\Desktop\RBF Net\RBF-Net\Debug\RBF Net.lib" /MACHINE:X86 Debug\GeneticLearn.obj
-         Debug\main.obj
-         Debug\RBFNet.obj
-         Debug\RBFNeuron.obj
-         Debug\RBFTrainer.obj
-         Debug\VirtLearn.obj
-         RBF Net.vcxproj -> C:\Users\Павел\Desktop\RBF Net\RBF-Net\Debug\RBF Net.exe
-     1>Построение проекта "C:\Users\Павел\Desktop\RBF Net\RBF-Net\RBF Net\RBF Net.vcxproj" завершено (целевые объекты Build).
-
-Сборка успешно завершена.
-
-Затраченное время: 00:00:07.31
+﻿  main.cpp
+c:\users\павел\desktop\rbf net\rbf-net\rbf net\rbfnet.h(163): warning C4018: <: несоответствие типов со знаком и без знака
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\rbfnet.h(158): при компиляции функции-члена "int RBFNet<I,O,K>::exportFile(std::string)" класса шаблон
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\main.cpp(97): см. ссылку на создание экземпляров функции шаблон при компиляции "int RBFNet<I,O,K>::exportFile(std::string)"
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\main.cpp(38): см. ссылку на создание экземпляров класса шаблон при компиляции "RBFNet<I,O,K>"
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(363): warning C4244: /=: преобразование "double" в "uint", возможна потеря данных
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(354): при компиляции функции-члена "std::vector<_Ty> GeneticLearn<I,O,K>::_geneticSort(std::vector<std::vector<K *> *> *,std::vector<I *> *,std::vector<I *> *,RBFNet<I,O,K> *)" класса шаблон
+          with
+          [
+              _Ty=float,
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(311): см. ссылку на создание экземпляров функции шаблон при компиляции "std::vector<_Ty> GeneticLearn<I,O,K>::_geneticSort(std::vector<std::vector<K *> *> *,std::vector<I *> *,std::vector<I *> *,RBFNet<I,O,K> *)"
+          with
+          [
+              _Ty=float,
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(178): при компиляции функции-члена "std::vector<_Ty> *GeneticLearn<I,O,K>::_geneticStartPopulation(void)" класса шаблон
+          with
+          [
+              _Ty=std::vector<std::vector<float> *> *,
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(93): см. ссылку на создание экземпляров функции шаблон при компиляции "std::vector<_Ty> *GeneticLearn<I,O,K>::_geneticStartPopulation(void)"
+          with
+          [
+              _Ty=std::vector<std::vector<float> *> *,
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(91): при компиляции функции-члена "void GeneticLearn<I,O,K>::_geneticFuncLearning(std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,RBFNet<I,O,K> *)" класса шаблон
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>,
+              _Ty=float *
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(87): см. ссылку на создание экземпляров функции шаблон при компиляции "void GeneticLearn<I,O,K>::_geneticFuncLearning(std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,std::vector<_Ty> *,RBFNet<I,O,K> *)"
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>,
+              _Ty=float *
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\geneticlearn.h(59): при компиляции функции-члена "GeneticLearn<I,O,K>::GeneticLearn(void)" класса шаблон
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\main.cpp(37): см. ссылку на создание экземпляров функции шаблон при компиляции "GeneticLearn<I,O,K>::GeneticLearn(void)"
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+          c:\users\павел\desktop\rbf net\rbf-net\rbf net\main.cpp(37): см. ссылку на создание экземпляров класса шаблон при компиляции "GeneticLearn<I,O,K>"
+          with
+          [
+              I=float,
+              O=float,
+              K=std::vector<float>
+          ]
+  Создание кода...
+  Пропуск... (изменения не обнаружены)
+  VirtLearn.cpp
+  RBFTrainer.cpp
+  RBFNet.cpp
+  GeneticLearn.cpp
+  RBF Net.vcxproj -> C:\Users\Павел\Desktop\RBF Net\RBF-Net\Debug\RBF Net.exe

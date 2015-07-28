@@ -5,6 +5,8 @@
 
 using namespace std;
 
+typedef unsigned int uint;
+
 template <class I, class O, class K>
 class RBFTrainer
 {
@@ -32,6 +34,7 @@ RBFTrainer<I, O, K>::~RBFTrainer(){
 
 template<class I, class O, class K> 
 RBFNet<I, O, K>* RBFTrainer<I, O, K>::train(vector<I*> inVec, vector<O*> outVec, vector<I*> testInVec, vector<O*> testOutVec){
+	srand(uint(time(NULL)));
 	_learnAgent->learning(&inVec, &outVec, &testInVec, &testOutVec, _net);
 	return _net;
 }

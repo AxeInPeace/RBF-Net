@@ -5,13 +5,18 @@
 #include "VirtLearn.h"
 #include "RBFNeuron.h"
 #include <algorithm>
+#include <Eigen/Dense>
+#include <Eigen/IterativeLinearSolvers>
 
+
+using Eigen::MatrixXf;
 using namespace std;
 
-#define uint unsigned int
+typedef unsigned int uint;
 
 const int POPUL_SIZE = 10;
-const float GOOD_CRITERIA = 0.95f;
+const float GOOD_CRITERIA = 0.85f;
+
 
 template <class I, class O, class K>
 class GeneticLearn: public VirtLearn<I, O, K>
@@ -25,33 +30,40 @@ public:
 
 private:
 	void _geneticFuncLearning(vector<I*>*, vector<O*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
-	void _weightLearning(vector<I*>*, vector<O*>*);
 
 	vector<vector<K*>*>* _geneticStartPopulation();
-	void _geneticCalcRulette(vector<float>*,vector<vector<K*>*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
-	vector<vector<K*>*>* _geneticCrossover(vector<float>*, vector<vector<K*>*>*, int);
+	void _geneticCalcRulette(vector<vector<K*>*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
+	vector<vector<K*>*>* _geneticCrossover(vector<vector<K*>*>*, int);
+	void _geneticMutation(vector<vector<K*>*>*);
 	vector<vector<K*>*>* _geneticSurvival(vector<vector<K*>*>*, vector<vector<K*>*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
 	float _geneticFitnessFunc(vector<K*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
-	
-	void _geneticSort(vector<vector<K*>*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
-	void _putEveryKoefInNeur(vector<K*>*, RBFNet<I, O, K>*);
-	bool _compareUnits(vector<K*>*, vector<K*>*, RBFNet<I, O, K>*, vector<I*>*, vector<O*>*);
+	void _calcPopulationFitness(vector<vector<K*>*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*, vector<float>*);
 
+	vector<float> _geneticSort(vector<vector<K*>*>*, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
+	int _compareUnits(vector<K*>*, vector<K*>*);
+
+	void _weightLearning(vector<vector<K*>*>*, int, vector<I*>*, vector<O*>*, RBFNet<I, O, K>*);
+	
 	int _sizeOfGenome;
 	int _sizeOfPopulation;	
+	vector<float> _ruletteArray;	
+	vector<MatrixXf*> _weightMtx;
+	int _mutationChance;
 
 	K (*_generateRandKoef)();
+
+	void _matrixOutput(int rows, int cols, MatrixXf mtx);
 };
 
 template<class I, class O, class K> 
-GeneticLearn<I, O, K>::GeneticLearn(){
-	;
+GeneticLearn<I, O, K>::GeneticLearn(){	
 }
-
 
 template<class I, class O, class K> 
 GeneticLearn<I, O, K>::~GeneticLearn(){
-	;
+	for(uint i = 0; i < _weightMtx.size(); i++){
+		delete _weightMtx[i];
+	}
 }
 
 template<class I, class O, class K> 
@@ -65,6 +77,13 @@ template<class I, class O, class K>
 void GeneticLearn<I, O, K>::learning(vector<I*>* inVals, vector<O*>* outVals, vector<I*>* testInVals, vector<O*>* testOutVals, RBFNet<I, O, K>* net){
 	_sizeOfGenome = net->getSize();
 	_sizeOfPopulation = POPUL_SIZE;
+	_ruletteArray.resize(_sizeOfPopulation);
+	_weightMtx.resize(_sizeOfPopulation * 2);
+	for(int i = 0; i < _sizeOfPopulation * 2; i++){
+		_weightMtx[i] = new MatrixXf(_sizeOfGenome, 1);
+	}
+	_mutationChance = 5;
+
 	_geneticFuncLearning(inVals, outVals, testInVals, testOutVals, net);
 }
 
@@ -76,19 +95,25 @@ void GeneticLearn<I, O, K>::_geneticFuncLearning(vector<I*>* inVals, vector<O*>*
 	
 	int iter = 0;
 	float bestSolution = 0;
-	do{		
-		vector<float> ruletteArray;
-		ruletteArray.resize(_sizeOfPopulation);
-		_geneticCalcRulette(&ruletteArray, population, testInVals, testOutVals, net);
+	do{	
+		cout << "iter = " << iter << " ";
+		_geneticCalcRulette(population, testInVals, testOutVals, net);
 
-		newPopulation = _geneticCrossover(&ruletteArray, population, POPUL_SIZE);
-//		_geneticMutation(&newPopulation);		
+		newPopulation = _geneticCrossover(population, _sizeOfPopulation);
+		_geneticMutation(newPopulation);				
 		
 		population = _geneticSurvival(population, newPopulation, testInVals, testOutVals, net);
-		_putEveryKoefInNeur((*population)[0], net);		
 
+		net->putKoefsInNerurons(population->at(0));		
+		//net->putWeightsInNeurons(_weightMtx[0]);
+		bestSolution = net->test(testInVals, testOutVals);
+		cout << "bestSolution = " << bestSolution << endl;
+		
 		iter++;
-	} while (bestSolution < GOOD_CRITERIA && iter < 10);
+	} while (bestSolution < GOOD_CRITERIA && iter < 100);
+	cout << endl;
+	//_weightLearning(population, 0, inVals, outVals, net);
+	//net->putWeightsInNeurons(_weightMtx[0]);
 
 	vector<K*>* unit;
 	K* gene;
@@ -103,13 +128,54 @@ void GeneticLearn<I, O, K>::_geneticFuncLearning(vector<I*>* inVals, vector<O*>*
 }
 
 template<class I, class O, class K> 
-void GeneticLearn<I, O, K>::_weightLearning(vector<I*>* inVals, vector<O*>* outVals){
-	;
+void GeneticLearn<I, O, K>::_matrixOutput(int rows, int cols, MatrixXf mtx){
+	for (int i = 0; i < rows; i++){
+		for(int j = 0; j < cols; j++)
+			cout << mtx(i, j) << " ";
+		cout << endl;
+	}
+}
+
+template<class I, class O, class K> 
+void GeneticLearn<I, O, K>::_weightLearning(vector<vector<K*>*>* koefs, int startPos, vector<I*>* inVals, vector<O*>* outVals, RBFNet<I, O, K>* net){
+	MatrixXf netResults(_sizeOfGenome, _sizeOfGenome);
+
+	for(int i = 0; i < 1; i++){
+	//for(int i = startPos; i < startPos + (int)koefs->size(); i++){
+		net->putKoefsInNerurons(koefs->at(i));
+
+		RBFNeuron<I, O, K>* curNeur;
+		for(int j = 0; j < _sizeOfGenome; j++){
+			curNeur = net->getNeur(j);
+			for (int k = 0; k < _sizeOfGenome; k++){
+				netResults(k, j) = curNeur->evaluate(*inVals->at(k));
+			}
+		}		
+
+		cout << "F(I) matrix" << endl;
+		_matrixOutput(_sizeOfGenome, _sizeOfGenome, netResults);
+
+		MatrixXf output(_sizeOfGenome, 1);
+		for (int j = 0; j < _sizeOfGenome; j++){
+			output(j, 0) = *(outVals->at(j));
+		}
+
+		cout << "O matrix" << endl;
+		_matrixOutput(_sizeOfGenome, 1, output);
+
+		Eigen::ConjugateGradient<MatrixXf> solver;
+		solver.compute(netResults);
+		*(_weightMtx[i]) = solver.solve(output);
+
+		cout << "W matrix" << endl;
+		_matrixOutput(_sizeOfGenome, 1, *(_weightMtx[i]));
+
+		system("pause");
+	}
 }
 
 template<class I, class O, class K> //complete
 vector<vector<K*>*>* GeneticLearn<I, O, K>:: _geneticStartPopulation(){	
-	srand(time(NULL));	
 	K* koef;	
 	vector<K*>* unit;	
 
@@ -132,26 +198,35 @@ vector<vector<K*>*>* GeneticLearn<I, O, K>:: _geneticStartPopulation(){
 }
 
 template <class I, class O, class K>// complete
-void GeneticLearn<I, O, K>::_geneticCalcRulette(vector<float>* resultArray,vector<vector<K*>*>* population, vector<I*>* testInVals, vector<O*>* outTestVals, RBFNet<I, O, K>* net){
+void GeneticLearn<I, O, K>::_geneticCalcRulette(vector<vector<K*>*>* population, vector<I*>* testInVals, vector<O*>* testOutVals, RBFNet<I, O, K>* net){
 	
 	float sum = 0, asum;
 
-	for(int i = 0; i < _sizeOfPopulation; i++){
-		_putEveryKoefInNeur((*population)[i], net);
-		(*resultArray)[i] = net->test(testInVals, outTestVals);
-		sum += (*resultArray)[i];		
+	_calcPopulationFitness(population, testInVals, testOutVals, net, &_ruletteArray); 
+	
+	for(uint i = 0; i < population->size(); i++){
+		sum += _ruletteArray[i];		
 	}
 
 	asum = 1 / sum;
 
-	(*resultArray)[0] *= asum;
-	for(int i = 1; i < _sizeOfPopulation; i++){
-		(*resultArray)[i] = (*resultArray)[i - 1] + (*resultArray)[i] * asum;
+	_ruletteArray[0] *= asum;
+	for(uint i = 1; i < population->size(); i++){
+		_ruletteArray[i] = _ruletteArray[i - 1] + _ruletteArray[i] * asum;
+	}
+}
+
+template <class I, class O, class K>
+void GeneticLearn<I, O, K>::_calcPopulationFitness(vector<vector<K*>*>* population, vector<I*>* testInVals, vector<O*>* testOutVals, RBFNet<I, O, K>* net, vector<float>* results){
+	results->resize(population->size());
+
+	for(uint i = 0; i < population->size(); i++){
+		(*results)[i] = _geneticFitnessFunc(population->at(i), testInVals, testOutVals, net);
 	}
 }
 
 template <class I, class O, class K>//almost complete (need to avoid numbers)
-vector<vector<K*>*>* GeneticLearn<I, O, K>::_geneticCrossover(vector<float>* rouletteArray, vector<vector<K*>*>* population, int sizeOfNewPopul){	
+vector<vector<K*>*>* GeneticLearn<I, O, K>::_geneticCrossover(vector<vector<K*>*>* population, int sizeOfNewPopul){	
 	vector<vector<K*>*>* newPopul = new vector<vector<K*>*>;
 	newPopul->resize(sizeOfNewPopul);
 	vector<K*>* newUnit;	
@@ -159,12 +234,12 @@ vector<vector<K*>*>* GeneticLearn<I, O, K>::_geneticCrossover(vector<float>* rou
 	for (int iter = 0; iter < sizeOfNewPopul; iter++){
 		float firstParantRoulette = (rand() % 500) * 0.002f; //ARGUMENTS
 		float secondParantRoulette = (rand() % 500) * 0.002f; //ARGUMENTS
-		int firstParant, secondParant;
+		int firstParant = -1, secondParant = -1;
 
 		for (int j = 0; j < _sizeOfPopulation; j++){
-			if (firstParantRoulette < (*rouletteArray)[j])
+			if (firstParantRoulette < _ruletteArray[j] && firstParant == -1)
 				firstParant = j;
-			if (secondParantRoulette < (*rouletteArray)[j])
+			if (secondParantRoulette < _ruletteArray[j] && secondParant == -1)
 				secondParant = j;
 		}
 
@@ -193,7 +268,32 @@ vector<vector<K*>*>* GeneticLearn<I, O, K>::_geneticCrossover(vector<float>* rou
 	return newPopul;
 }
 
-template <class I, class O, class K>
+template <class I, class O, class K> //complete
+void GeneticLearn<I, O, K>::_geneticMutation(vector<vector<K*>*>* population){
+	int counterOfEqualUnits = 1;
+
+	for(uint i = 1; i < population->size(); i++){
+		if(_compareUnits(population->at(0), population->at(i)) == 1)
+			counterOfEqualUnits++;
+	}
+
+	_mutationChance = 100 * counterOfEqualUnits / population->size();
+	if(_mutationChance < 5)
+		_mutationChance = 5;
+	cout << "mutationChance = " << _mutationChance << " ";
+
+	for (int i = 0; i < _sizeOfPopulation; i++){
+		int rollMutationDice = rand() % 100;
+		if (rollMutationDice < _mutationChance){
+			vector<K*>* unit = population->at(i);
+			int rollGeneMutationDice = rand() % _sizeOfGenome;			
+			K* gene = unit->at(rollGeneMutationDice);
+			*gene = _generateRandKoef();			
+		}
+	}
+}
+
+template <class I, class O, class K> //complete
 vector<vector<K*>*>* GeneticLearn<I, O, K>::_geneticSurvival(vector<vector<K*>*>* popul1, vector<vector<K*>*>* popul2, vector<I*>* inVals, vector<O*>* outVals, RBFNet<I, O, K>* net){
 	vector<vector<K*>*>* newPopul = new vector<vector<K*>*>;
 	*newPopul = *popul1;
@@ -205,24 +305,10 @@ vector<vector<K*>*>* GeneticLearn<I, O, K>::_geneticSurvival(vector<vector<K*>*>
 	for(uint i = 0; i < popul2Size; i++){
 		(*newPopul)[popul1Size + i] = (*popul2)[i];
 	}
-	
-	/*
-	qsort(newPopul, _sizeOfPopulation, sizeof((*newPopul)[0]), [&](const void* ptr1, const void* ptr2)->int {
-		_putEveryKoefInNeur((vector<K*>*)ptr1, net);
-		float val1 = net->test(inVals, outVals);
-		_putEveryKoefInNeur((vector<K*>*)ptr2, net);
-		float val2 = net->test(inVals, outVals);
-		(val1 > val2)? return 1: return -1;
-	});
-	*/
-	_geneticSort(newPopul, inVals, outVals, net);
 
-	for(uint i = 0; i < newPopulSize; i++){
-		_putEveryKoefInNeur(newPopul->at(i), net);
-		cout << net->test(inVals, outVals) << " ";		
-	}
-	cout << endl;
-
+	vector<float> fitnessValue;
+	fitnessValue.resize(newPopulSize);
+	fitnessValue = _geneticSort(newPopul, inVals, outVals, net);
 
 	vector<K*>* unit;
 	K* gene;
@@ -241,39 +327,51 @@ vector<vector<K*>*>* GeneticLearn<I, O, K>::_geneticSurvival(vector<vector<K*>*>
 
 template <class I, class O, class K>
 float GeneticLearn<I, O, K>::_geneticFitnessFunc(vector<K*>* koefsVec, vector<I*>* testInVals, vector<O*>* testOutVals, RBFNet<I, O, K>* net){
-	_putEveryKoefInNeur(koefsVec, net);
+	net->putKoefsInNerurons(koefsVec);	
+	//net->putWeightsInNeurons(_weightMtx[i]);
 	return net->test(testInVals, testOutVals);
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++ LEARN NET +++++++++++++++++++++++++++++++++++++++++++++++++
 
-template <class I, class O, class K>
-void GeneticLearn<I, O, K>::_putEveryKoefInNeur(vector<K*>* koefs, RBFNet<I, O, K>* net){
-	RBFNeuron<I, O, K>* curNeuron;
-	K* curKoef;
 
-	for (int i = 0; i < _sizeOfGenome; i++){
-		curNeuron = net->getNeur(i);
-		curKoef = (*koefs)[i];
-		curNeuron->changeKoef(curKoef);
-	}
+
+
+//=========================================== SORT POPULATION =================================================
+template <class I, class O, class K>
+int GeneticLearn<I, O, K>::_compareUnits(vector<K*>* ptr1, vector<K*>* ptr2){ //complete
+	if (ptr1->size() != ptr2->size() || ptr1->size() != _sizeOfGenome)
+		return -1;
+	
+	for(int i = 0; i < _sizeOfGenome; i++)
+		if (*(ptr1->at(i)) != *(ptr2->at(i)))
+			return 0;
+	
+	return 1;
 }
 
 template <class I, class O, class K>
-bool GeneticLearn<I, O, K>::_compareUnits(vector<K*>* ptr1, vector<K*>* ptr2, RBFNet<I, O, K>* net, vector<I*>* inVals, vector<O*>* outVals){
-	_putEveryKoefInNeur(ptr1, net);
-	float val1 = net->test(inVals, outVals);
-	_putEveryKoefInNeur(ptr2, net);
-	float val2 = net->test(inVals, outVals);
-	return (val1 > val2);
-}
+vector<float> GeneticLearn<I, O, K>::_geneticSort(vector<vector<K*>*>* population, vector<I*>* inVals, vector<O*>* outVals, RBFNet<I, O, K>* net) { //complete
+	vector<float> fitness;	
 
-template <class I, class O, class K>
-void GeneticLearn<I, O, K>::_geneticSort(vector<vector<K*>*>* population, vector<I*>* inVals, vector<O*>* outVals, RBFNet<I, O, K>* net) {
-	for(uint i = 0; i < population->size(); i++){
-		for(uint j = i + 1; j < population->size(); j++){
-			if (_compareUnits((*population)[j], (*population)[i], net, inVals, outVals)) 
-				swap((*population)[j], (*population)[i]);
-		}
-	}
+	_calcPopulationFitness(population, inVals, outVals, net, &fitness);
+
+	bool swapped = true;
+	uint jump = population->size();
+	while (jump > 1 || swapped){
+		if (jump > 1)
+			jump /= 1.24733;
+		swapped = false;
+		for (uint i = 0; i + jump < population->size(); i++){
+			if (fitness[i + jump] > fitness[i]){
+				swap(fitness[i + jump], fitness[i]);
+				swap((*population)[i + jump], (*population)[i]);
+				//swap(_weightMtx[i + jump], _weightMtx[i]);
+                swapped = true;
+            };
+		};
+	};	
+
+	return fitness;
 }
+//+++++++++++++++++++++++++++++++++++++++++++ SORT POPULATION +++++++++++++++++++++++++++++++++++++++++++++++++

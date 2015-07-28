@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 template <class I, class O, class K>
 class VirtLearn
 {

@@ -2,8 +2,13 @@
 
 #include <vector>
 #include "RBFNeuron.h"
+#include <Eigen/Dense>
+#include <string>
+#include <fstream>
 
+typedef unsigned int uint;
 
+using Eigen::MatrixXf;
 using namespace std;
 
 template <class I, class O, class K>
@@ -13,14 +18,20 @@ public:
 	RBFNet();
 	RBFNet(int, int, int);
 	RBFNet (I, int, O);	
+	~RBFNet();
+
 	void initNeuronsWithFunc(O (*evaluateFunc)(I, K));
 	void setZeroFunc(void (*zeroFunc)(O));
-	~RBFNet();
+	int putKoefsInNerurons(vector<K*>*);
+	int putWeightsInNeurons(MatrixXf*);
 
 	RBFNeuron<I, O, K>* getNeur(int);	
 	int getSize();	
 	float test(vector<I*>*, vector<O*>*);
 	O evaluate(I);
+
+	int importFile(string);
+	int exportFile(string);
 
 	void initErrorValue(O);
 
@@ -38,12 +49,6 @@ private:
 	//friend O operator+(O, O);	
 };
 
-#include "RBFNeuron.h"
-#include <vector>
-
-#define uint unsigned int
-
-using namespace std;
 
 //=========================================== INITIALIZATION =================================================
 template<class I, class O, class K>
@@ -104,8 +109,65 @@ template<class I, class O, class K>
 void RBFNet<I, O, K>::setZeroFunc(void (*zeroFunc)(O)){
 	_getZeroObj = zeroFunc;
 }
+
+template<class I, class O, class K>
+int RBFNet<I, O, K>::putKoefsInNerurons(vector<K*>* koefs){
+	if(koefs->size() != _hiddenLayerSize)
+		return -1;
+	
+	RBFNeuron<I, O, K>* curNeur;
+	for (int i = 0; i < _hiddenLayerSize; i++){
+		curNeur = _hiddenNeur[i];
+		curNeur->changeKoef(koefs->at(i));
+	}
+
+	return 0;
+}
+
+template<class I, class O, class K>
+int RBFNet<I, O, K>::putWeightsInNeurons(MatrixXf* weightVector){
+	
+	RBFNeuron<I, O, K>* curNeur;
+	for (int i = 0; i < _hiddenLayerSize; i++){
+		curNeur = _hiddenNeur[i];
+		curNeur->changeWeight(0, (*weightVector)(i,0));//долго
+	}
+
+	return 0;
+}
+
+
 //+++++++++++++++++++++++++++++++++++++++++++ INITIALIZATION +++++++++++++++++++++++++++++++++++++++++++++++++
 
+//=========================================== WORK WITH FILES =================================================
+template<class I, class O, class K>
+int RBFNet<I, O, K>::importFile(string nameOfFile){
+	ifstream file(nameOfFile, ios::in);
+	for (int i = 0; i < _hiddenLayerSize; i++){
+		RBFNeuron<I, O, K>* curNeur = _hiddenNeur[i];
+		K koefs;				
+		for(int j = 0; j < koefs->size(); j++){
+			file >> koefs[j];
+		}
+		curNeur->changeKoef(&koefs);
+	}
+	return 1;
+}
+
+template<class I, class O, class K>
+int RBFNet<I, O, K>::exportFile(string nameOfFile){
+	ofstream file(nameOfFile, ios::out);
+	for (int i = 0; i < _hiddenLayerSize; i++){
+		RBFNeuron<I, O, K>* curNeur = _hiddenNeur[i];		
+		K koefs = (curNeur->getKoef());
+		for(int j = 0; j < koefs.size(); j++){
+			file << koefs[j] << endl;
+		}
+		curNeur->changeKoef(&koefs);
+	}
+	return 1;
+}
+//+++++++++++++++++++++++++++++++++++++++++++ WORK WITH FILES +++++++++++++++++++++++++++++++++++++++++++++++++
 
 //=========================================== GETTING RESULTS =================================================
 template<class I, class O, class K>
