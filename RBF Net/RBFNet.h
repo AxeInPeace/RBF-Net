@@ -23,12 +23,13 @@ public:
 	void initNeuronsWithFunc(O (*evaluateFunc)(I, K));
 	void setZeroFunc(void (*zeroFunc)(O));
 	int putKoefsInNerurons(vector<K*>*);
-	int putWeightsInNeurons(MatrixXf*);
+	int putWeightsInNeurons(MatrixXf);
 
 	RBFNeuron<I, O, K>* getNeur(int);	
 	int getSize();	
 	float test(vector<I*>*, vector<O*>*);
 	O evaluate(I);
+	O evaluate(I, int);
 
 	int importFile(string);
 	int exportFile(string);
@@ -125,12 +126,12 @@ int RBFNet<I, O, K>::putKoefsInNerurons(vector<K*>* koefs){
 }
 
 template<class I, class O, class K>
-int RBFNet<I, O, K>::putWeightsInNeurons(MatrixXf* weightVector){
+int RBFNet<I, O, K>::putWeightsInNeurons(MatrixXf weightVector){
 	
 	RBFNeuron<I, O, K>* curNeur;
 	for (int i = 0; i < _hiddenLayerSize; i++){
 		curNeur = _hiddenNeur[i];
-		curNeur->changeWeight(0, (*weightVector)(i,0));//долго
+		curNeur->changeWeight(0, weightVector(i,0));
 	}
 
 	return 0;
@@ -151,7 +152,7 @@ int RBFNet<I, O, K>::importFile(string nameOfFile){
 		}
 		curNeur->changeKoef(&koefs);
 	}
-	return 1;
+	return 0;
 }
 
 template<class I, class O, class K>
@@ -165,7 +166,7 @@ int RBFNet<I, O, K>::exportFile(string nameOfFile){
 		}
 		curNeur->changeKoef(&koefs);
 	}
-	return 1;
+	return 0;
 }
 //+++++++++++++++++++++++++++++++++++++++++++ WORK WITH FILES +++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -189,6 +190,18 @@ O RBFNet<I, O, K>::evaluate(I inputValue){
 	}
 	return ans;
 }
+
+template<class I, class O, class K>
+O RBFNet<I, O, K>::evaluate(I inputValue, int k){
+	O ans = 0;
+
+	for (int i = 0; i < _hiddenLayerSize; i++){
+		RBFNeuron<I, O, K>* curNeur = _hiddenNeur[i];
+		ans = ans + curNeur->evaluate(inputValue, 0);
+	}
+	return ans;
+}
+
 
 template<class I, class O, class K>
 float RBFNet<I, O, K>::test(vector<I*>* inVals, vector<O*>* outVals){

@@ -20,9 +20,9 @@ float gaussian(float inValue, vector<float> koefs){
 vector<float> gaussKoefGener(){
 	vector<float> retVal;
 	retVal.resize(3);
-	retVal[0] = float((rand() % 120)) * 0.5f;
-	retVal[1] = float(rand() % 50) * 0.1f + 5;
-	retVal[2] = float(rand() % 100);
+	retVal[0] = float((rand() % 50));
+	retVal[1] = float(rand() % 5) * 0.2f + 3;
+	retVal[2] = float(rand() % 40);
 	return retVal;
 }
 
@@ -33,6 +33,7 @@ float funcToAprox(float x){
 int main(){
 	cout.precision(5);
 	cout.setf(ios::fixed);
+
 	RBFTrainer<float, float, vector<float>> trainer;
 	GeneticLearn<float, float, vector<float>> geneticMethod;
 	RBFNet<float, float, vector<float>> net(1, numOfTests, 1);
@@ -72,8 +73,10 @@ int main(){
 		*(outTestVals[i]) = funcToAprox(float(i));
 	}
 
+
 	net = *(trainer.train(inVals, outVals, inTestVals, outTestVals));
 	
+	cout.precision(1);
 	vector<float> koefs;
 	for(int i = 0; i < numOfTests; i++){
 		koefs = net.getNeur(i)->getKoef();
@@ -81,10 +84,6 @@ int main(){
 	}
 
 	float testVal;
-	for (int i = 0; i < 10; i++){
-		testVal = i * 10.0f;
-		cout << testVal << " ~ " << net.evaluate(testVal) << endl;
-	}
 
 	do{
 		cin >> testVal;
